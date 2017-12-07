@@ -3,7 +3,7 @@
 import os
 import json
 import subprocess
-import config
+from . import config
 
 
 def check_filters(collection, attribute, value):

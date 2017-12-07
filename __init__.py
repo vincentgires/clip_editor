@@ -57,7 +57,7 @@ class CollectionItem(object):
         
         if not check_filters(self._parent, attribute, value):
             object.__setattr__(self, attribute, None)
-            raise AttributeError('Wrong type')
+            raise AttributeError('Wrong value')
 
 
 class Collection(object):

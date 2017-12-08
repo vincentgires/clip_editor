@@ -15,11 +15,43 @@ movieclips = data.movieclips
 context = bpy.context
 scene = context.scene
 
+sequence_channel = 1
+overlay_channel = 2
+
+def get_frame_from_filename(file):
+    return int(file.split('.')[-2])
+
+def get_current_strip(scene, channel):
+    frame_current = scene.frame_current
+    
+    if scene.sequence_editor:
+        for strip in scene.sequence_editor.sequences:
+            if strip.frame_start <= frame_current < strip.frame_start+strip.frame_final_duration:
+                if strip.channel == channel:
+                    return strip
+                else:
+                    return None
+    else:
+        return None
+
 def update_frame(scene):
     for overlay in settings['overlays']:
-        if overlay['type'] == 'FRAME':
-            objects = scene.objects[overlay['position']]
-            objects.data.body = '{:04}'.format(scene.frame_current)
+        object = scene.objects[overlay['position']]
+        
+        strip = get_current_strip(scene, sequence_channel)
+        if strip:
+            if strip.type in ['MOVIE', 'MOVIECLIP']:
+                if overlay['type'] == 'FRAME':
+                    object.data.body = '{:04}'.format(scene.frame_current)
+                
+            elif strip.type == 'IMAGE':
+                elem = strip.strip_elem_from_frame(scene.frame_current)
+                file_frame = get_frame_from_filename(elem.filename)
+                object.data.body = '{:04}'.format(file_frame)
+                
+                if overlay['type'] == 'FILENAME':
+                    if strip.type == 'IMAGE':
+                        object.data.body = elem.filename
 
 bpy.app.handlers.frame_change_pre.append(update_frame)
 
@@ -44,15 +76,13 @@ if not scene.sequence_editor:
     scene.sequence_editor_create()
 sequences = scene.sequence_editor.sequences
 
-channel = 1
-
 if os.path.isfile(path):
     filename = os.path.basename(settings['sequences'][0]['path'])
-    frame_start = int(filename.split('.')[-2])
+    frame_start = get_frame_from_filename(filename)
     sequence_strip = sequences.new_clip(
         name='sequence_clip',
         clip=movieclip,
-        channel=channel,
+        channel=sequence_channel,
         frame_start=frame_start
         )
 
@@ -65,7 +95,7 @@ elif os.path.isdir(path):
     sequence_strip = sequences.new_image(
         name='image_sequence',
         filepath=first_frame,
-        channel=channel,
+        channel=sequence_channel,
         frame_start=frame_start
         )
 
@@ -78,10 +108,10 @@ if settings['overlays']:
     overlay_scene = sequences.new_scene(
         name='overlay_scene',
         scene=scene,
-        channel=2,
+        channel=overlay_channel,
         frame_start=frame_start
         )
-    overlay_scene.frame_final_duration = movieclip.frame_duration
+    overlay_scene.frame_final_duration = sequence_strip.frame_duration
     overlay_scene.blend_type = 'ALPHA_OVER'
     
     for overlay in settings['overlays']:
@@ -100,8 +130,9 @@ if settings['overlays']:
         
         
 # RENDER SETTINGS
-scene.frame_end = frame_start+movieclip.frame_duration-1
 scene.frame_start = frame_start
+#scene.frame_end = frame_start+movieclip.frame_duration-1
+scene.frame_end = frame_start+sequence_strip.frame_duration-1
 scene.render.resolution_x = x_res
 scene.render.resolution_y = y_res
 scene.render.resolution_percentage = 100

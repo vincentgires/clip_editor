@@ -3,9 +3,19 @@ import clip_editor
 clip = clip_editor.Clip()
 
 sequence = clip.sequences.new()
-# from frame 0101 to the end of the sequence:
+
+# from frame 0101 to the end of the sequence
 sequence.path = '/my/image_sequence/path/filename.0101.exr'
 
+# or you can specify all the files for a directory
+sequence.path = '/my/directory/'
+sequence.files = [
+    '991_0010_my_file.0101.exr',
+    '991_0010_my_file.0102.exr',
+    '991_0010_my_file.0103.exr',
+    '991_0010_my_file.0104.exr',
+    '991_0010_my_file.0105.exr'
+    ]
 
 frame_overlay = clip.overlays.new()
 # available overlay types in clip_editor.OverlayType.items

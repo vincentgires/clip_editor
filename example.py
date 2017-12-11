@@ -7,6 +7,9 @@ sequence = clip.sequences.new()
 # from frame 0101 to the end of the sequence
 sequence.path = '/my/image_sequence/path/filename.0101.exr'
 
+# #### represent frame number
+sequence.path = '/my/image_sequence/path/filename.####.exr'
+
 # or you can specify all the files for a directory
 sequence.path = '/my/directory/'
 sequence.files = [

@@ -137,6 +137,35 @@ class Sequences(Collection):
             }
         
         Collection.__init__(self, **attributes)
+    
+    def find_images(self, item):
+        images = []
+        path = self.items[item].path
+        dirname, basename = os.path.split(path)
+        
+        if '#' in basename:
+            length = 0
+            index = basename.find('#')
+            
+            for i in basename[index:]:
+                if i == '#':
+                    length += 1
+                else:
+                    break
+        
+            for file in os.listdir(dirname):
+                if len(file) == len(basename):
+                    
+                    check = True
+                    for i in range(length):
+                        if not file[index+i].isdigit():
+                            check = False
+                    
+                    if check:
+                        images.append(file)
+            
+            return images
+        
         
 
 class Overlays(Collection):

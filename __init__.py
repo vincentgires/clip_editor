@@ -32,8 +32,8 @@ class Enum(object):
         return self._items
 
 
-class CollectionItem(object):
-    def __init__(self, parent, **kwargs):
+class Item(object):
+    def __init__(self, parent=None, **kwargs):
         self._parent = parent
         self._create_attributes(kwargs)
     
@@ -55,13 +55,15 @@ class CollectionItem(object):
     def __setattr__(self, attribute, value):
         object.__setattr__(self, attribute, value)
         
-        if not check_filters(self._parent, attribute, value):
-            object.__setattr__(self, attribute, None)
-            raise AttributeError('Wrong value')
+        if self._parent:
+            if not check_filters(self._parent, attribute, value):
+                object.__setattr__(self, attribute, None)
+                raise AttributeError('Wrong value')
 
 
 class Collection(object):
-    def __init__(self, filters=[], **kwargs):
+    def __init__(self, item_type=Item, filters=[], **kwargs):
+        self._ItemType = item_type
         self._items = []
         self._filters = filters
         self._attributes = kwargs
@@ -104,7 +106,7 @@ class Collection(object):
                     raise AttributeError('Wrong value')
                 
                 
-        item = CollectionItem(self, **attributes)
+        item = self._ItemType(self, **attributes)
         self._items.append(item)
         return item
 
@@ -127,20 +129,10 @@ OverlayPosition = Enum(
     'BOTTOM_RIGHT')
 
 
-class Sequences(Collection):
-    def __init__(self, name='', path=''):
-        
-        attributes = {
-            'name':name,
-            'path':path,
-            'files':[]
-            }
-        
-        Collection.__init__(self, **attributes)
-    
-    def find_images(self, item):
+class Sequence(Item):
+    def find_images(self):
         images = []
-        path = self.items[item].path
+        path = self.path
         dirname, basename = os.path.split(path)
         
         if '#' in basename:
@@ -169,8 +161,19 @@ class Sequences(Collection):
         
         else:
             return None
+
+
+class Sequences(Collection):
+    def __init__(self, name='', path=''):
         
+        attributes = {
+            'name':name,
+            'path':path,
+            'files':[]
+            }
         
+        Collection.__init__(self, item_type=Sequence, **attributes)
+
 
 class Overlays(Collection):
     def __init__(self, type='TEXT', position='BOTTOM_LEFT', body=''):
@@ -233,10 +236,3 @@ class Clip():
             env['OCIO'] = self.ocio
         
         subprocess.call(command, env=env)
-    
-
-
-
-
-
-

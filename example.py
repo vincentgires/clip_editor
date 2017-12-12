@@ -9,6 +9,7 @@ sequence.path = '/my/image_sequence/path/filename.0101.exr'
 
 # #### represent frame number
 sequence.path = '/my/image_sequence/path/filename.####.exr'
+sequence.find_images() # gets the list of all the images corresponding to the sequence
 
 # or you can specify all the files for a directory
 sequence.path = '/my/directory/'

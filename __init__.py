@@ -164,7 +164,11 @@ class Sequences(Collection):
                     if check:
                         images.append(file)
             
+            images.sort()
             return images
+        
+        else:
+            return None
         
         
 

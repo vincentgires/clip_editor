@@ -43,6 +43,9 @@ def update_frame(scene):
         if not strip:
             return None
         
+        if overlay['type'] == 'NAME':
+            object.data.body = strip['sequence_name']
+        
         if strip.type in ['MOVIE', 'MOVIECLIP']:
             if overlay['type'] == 'FRAME':
                 object.data.body = '{:04}'.format(scene.frame_current)
@@ -122,6 +125,9 @@ for sequence in settings['sequences']:
     # movieclip is created also for image sequences to get the resolution
     x_res, y_res = movieclip.size
     
+    # custom properties
+    sequence_strip['sequence_name'] = sequence['name']
+    
     
 # SET OVERLAY
 if settings['overlays']:
@@ -139,8 +145,6 @@ if settings['overlays']:
         object.hide_render = False
         if overlay['type'] == 'TEXT':
             object.data.body = overlay['body']
-        elif overlay['type'] == 'NAME':
-            object.data.body = overlay['name']
         elif overlay['type'] == 'DATE':
             object.data.body = time.strftime('%Y-%m-%d')
         elif overlay['type'] == 'USER':

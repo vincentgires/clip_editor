@@ -24,15 +24,13 @@ def get_frame_from_filename(file):
 def get_current_strip(scene, channel):
     frame_current = scene.frame_current
     
-    if scene.sequence_editor:
-        for strip in scene.sequence_editor.sequences:
-            if strip.frame_start <= frame_current < strip.frame_start+strip.frame_final_duration:
-                if strip.channel == channel:
-                    return strip
-                else:
-                    return None
-    else:
+    if not scene.sequence_editor:
         return None
+    
+    for strip in scene.sequence_editor.sequences:
+        if strip.frame_start <= frame_current < strip.frame_start+strip.frame_final_duration:
+            if strip.channel == channel:
+                return strip
 
 def update_frame(scene):
     for overlay in settings['overlays']:

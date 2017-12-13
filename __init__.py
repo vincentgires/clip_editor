@@ -130,37 +130,37 @@ OverlayPosition = Enum(
 
 
 class Sequence(Item):
+    
     def find_images(self):
         images = []
         path = self.path
         dirname, basename = os.path.split(path)
         
-        if '#' in basename:
-            length = 0
-            index = basename.find('#')
-            
-            for i in basename[index:]:
-                if i == '#':
-                    length += 1
-                else:
-                    break
-        
-            for file in os.listdir(dirname):
-                if len(file) == len(basename):
-                    
-                    check = True
-                    for i in range(length):
-                        if not file[index+i].isdigit():
-                            check = False
-                    
-                    if check:
-                        images.append(file)
-            
-            images.sort()
-            return images
-        
-        else:
+        if '#' not in basename:
             return None
+        
+        length = 0
+        index = basename.find('#')
+        
+        for i in basename[index:]:
+            if i == '#':
+                length += 1
+            else:
+                break
+    
+        for file in os.listdir(dirname):
+            if len(file) == len(basename):
+                
+                check = True
+                for i in range(length):
+                    if not file[index+i].isdigit():
+                        check = False
+                
+                if check:
+                    images.append(file)
+        
+        images.sort()
+        return images
 
 
 class Sequences(Collection):
@@ -209,11 +209,19 @@ class Clip():
     def encode(self, output, fps=24,
                display_bars=False, bar_size=60):
         
+        sequences_settings = []
+        for seq in self.sequences:
+            item = seq.attributes
+            item['images'] = seq.find_images()
+            sequences_settings.append(item)
+        
+        overlays_settings = [i.attributes for i in self.overlays]
+        
         settings = {
-            'sequences':[i.attributes for i in self.sequences],
+            'sequences':sequences_settings,
             'output':output,
             'fps':fps,
-            'overlays':[i.attributes for i in self.overlays],
+            'overlays':overlays_settings,
             'display_bars':display_bars,
             'bar_size':bar_size
             }

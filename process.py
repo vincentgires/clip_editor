@@ -4,7 +4,6 @@ import time
 import sys
 import getpass
 import json
-import pickle
 
 settings = sys.argv[-1]
 settings = json.loads(settings)

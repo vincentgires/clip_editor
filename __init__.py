@@ -62,8 +62,9 @@ class Item(object):
 
 
 class Collection(object):
-    def __init__(self, item_type=Item, filters=[], **kwargs):
-        self._ItemType = item_type
+    _ItemType = Item
+    
+    def __init__(self, filters=[], **kwargs):
         self._items = []
         self._filters = filters
         self._attributes = kwargs
@@ -164,6 +165,8 @@ class Sequence(Item):
 
 
 class Sequences(Collection):
+    _ItemType = Sequence
+    
     def __init__(self, name='', path=''):
         
         attributes = {
@@ -172,8 +175,8 @@ class Sequences(Collection):
             'files':[]
             }
         
-        Collection.__init__(self, item_type=Sequence, **attributes)
-
+        #Collection.__init__(self, item_type=Sequence, **attributes)
+        super(Sequences, self).__init__(**attributes)
 
 class Overlays(Collection):
     def __init__(self, type='TEXT', position='BOTTOM_LEFT', body=''):
@@ -189,7 +192,8 @@ class Overlays(Collection):
             'position':OverlayPosition
             }
         
-        Collection.__init__(self, filters=filters, **attributes)
+        #Collection.__init__(self, filters=filters, **attributes)
+        super(Overlays, self).__init__(filters=filters, **attributes)
 
 
 class Clip():

@@ -125,6 +125,13 @@ for sequence in settings['sequences']:
     # movieclip is created also for image sequences to get the resolution
     x_res, y_res = movieclip.size
     
+    # colorspace
+    sequence_colorspace = sequence['colorspace']
+    if sequence_colorspace:
+        movieclip.colorspace_settings.name = sequence_colorspace
+        if sequence_strip.type in ['MOVIE', 'IMAGE']:
+            sequence_strip.colorspace_settings.name = sequence_colorspace
+        
     # custom properties
     sequence_strip['sequence_name'] = sequence['name']
     
@@ -159,18 +166,24 @@ scene.render.resolution_y = y_res
 scene.render.resolution_percentage = 100
 scene.render.filepath = settings['output']
 
+view_transform = settings['view_transform']
+if view_transform:
+    scene.view_settings.view_transform = view_transform
+
+
 if settings['display_bars']:
     scene.render.resolution_y += settings['bar_size']
     sequence_strip.use_translation = True
     sequence_strip.transform.offset_y = settings['bar_size']/2
 
 
-# SAVE FILE
-#bpy.ops.wm.save_as_mainfile(
-    #filepath=settings['output']+'.blend',
-    #check_existing=True,
-    #relative_remap=False
-    #)
+# BLEND FILE
+if settings['debug_file']:
+    bpy.ops.wm.save_as_mainfile(
+        filepath='{}.blend'.format(settings['output']),
+        check_existing=True,
+        relative_remap=False
+        )
 
 
 # ENCODE

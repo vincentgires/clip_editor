@@ -32,7 +32,12 @@ clip.overlays.new(type='TEXT',
                   position='TOP_RIGHT',
                   body='my custom text')
 
-clip.ocio = '/nwave/data/color/aces_1.0.3-nwave/config.ocio'
+# colorspace
+clip.ocio = '/nwave/data/color/aces_1.0.3-nwave/config.ocio' # optional
+clip.view_transform = 'sRGB D60 sim.' # optional
+sequence.colorspace = 'ACES - ACEScg' # optional
+
+
 clip.encode(output='/home/my_home/out.mov',
             display_bars=True)
 

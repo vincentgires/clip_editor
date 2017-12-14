@@ -172,10 +172,11 @@ class Sequences(Collection):
         attributes = {
             'name':name,
             'path':path,
-            'files':[]
+            'files':[],
+            'colorspace':None
             }
         
-        #Collection.__init__(self, item_type=Sequence, **attributes)
+        #Collection.__init__(self, **attributes)
         super(Sequences, self).__init__(**attributes)
 
 class Overlays(Collection):
@@ -198,7 +199,8 @@ class Overlays(Collection):
 
 class Clip():
     def __init__(self, ocio=None):
-        self.ocio = None
+        self.view_transform = None
+        self.ocio = ocio
         self._sequences = Sequences()
         self._overlays = Overlays()
     
@@ -211,7 +213,7 @@ class Clip():
         return self._overlays
         
     def encode(self, output, fps=24,
-               display_bars=False, bar_size=60):
+               display_bars=False, bar_size=60, debug_file=False):
         
         sequences_settings = []
         for seq in self.sequences:
@@ -227,7 +229,9 @@ class Clip():
             'fps':fps,
             'overlays':overlays_settings,
             'display_bars':display_bars,
-            'bar_size':bar_size
+            'bar_size':bar_size,
+            'view_transform':self.view_transform,
+            'debug_file':debug_file
             }
         settings = json.dumps(settings)
         

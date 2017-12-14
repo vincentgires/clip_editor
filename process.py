@@ -4,6 +4,7 @@ import time
 import sys
 import getpass
 import json
+import re
 
 settings = sys.argv[-1]
 settings = json.loads(settings)
@@ -19,8 +20,10 @@ overlay_channel = 2
 
 
 def get_frame_from_filename(file):
-    return int(file.split('.')[-2])
-
+    digits = re.split(r'(\d+)', file)
+    for i in reversed(digits):
+        if i.isdigit():
+            return int(i)
 
 def get_current_strip(scene, channel):
     frame_current = scene.frame_current
@@ -33,6 +36,15 @@ def get_current_strip(scene, channel):
         if strip.frame_start <= frame_current < frame_end:
             if strip.channel == channel:
                 return strip
+
+def get_last_strip(scene):
+    sequences = scene.sequence_editor.sequences
+    if sequences:
+        last_strip = sequences[0]
+        for strip in sequences:
+            if strip.frame_start > last_strip.frame_start:
+                last_strip = strip
+        return last_strip
 
 def update_frame(scene):
     for overlay in settings['overlays']:
@@ -67,8 +79,12 @@ bpy.app.handlers.frame_change_pre.append(update_frame)
 
 
 def create_image_sequence(scene, directory, elements):
-    filename = elements[0]
-    frame_start = int(filename.split('.')[-2])
+    
+    frame_from_filename = get_frame_from_filename(basename)
+    if frame_from_filename:
+        frame_start = frame_from_filename
+    else:
+        frame_start = 1
     
     first_frame = os.path.join(directory, elements[0])
     sequence_strip = sequences.new_image(
@@ -102,7 +118,13 @@ for sequence in settings['sequences']:
     if os.path.isfile(path):
         dirname, basename = os.path.split(path)
         movieclip = movieclips.load(path)
-        frame_start = get_frame_from_filename(basename)
+        
+        last = get_last_strip(scene)
+        if last:
+            frame_start = last.frame_start + last.frame_final_duration
+        else:
+            frame_start = 1
+            
         sequence_strip = sequences.new_clip(
             name=basename,
             clip=movieclip,

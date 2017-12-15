@@ -110,6 +110,7 @@ sequences = scene.sequence_editor.sequences
 # GET FILES AND SET SEQUENCER
 for sequence in settings['sequences']:
     path = sequence['path']
+    path = os.path.normpath(path)
     if sys.platform.startswith('linux'):
         path = path.replace('//', '/')
     files = sequence['files']

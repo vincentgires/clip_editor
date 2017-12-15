@@ -215,6 +215,8 @@ class Clip():
     def encode(self, output, fps=24,
                display_bars=False, bar_size=60, debug_file=False):
         
+        output = os.path.normpath(output)
+        
         sequences_settings = []
         for seq in self.sequences:
             item = seq.attributes

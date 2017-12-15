@@ -46,6 +46,15 @@ def get_last_strip(scene):
                 last_strip = strip
         return last_strip
 
+def get_next_frame_start(scene):
+        last = get_last_strip(scene)
+        if last:
+            frame_start = last.frame_start + last.frame_final_duration
+        else:
+            frame_start = 1
+        
+        return frame_start
+
 def update_frame(scene):
     for overlay in settings['overlays']:
         object = scene.objects[overlay['position']]
@@ -80,13 +89,9 @@ bpy.app.handlers.frame_change_pre.append(update_frame)
 
 def create_image_sequence(scene, directory, elements):
     
-    frame_from_filename = get_frame_from_filename(basename)
-    if frame_from_filename:
-        frame_start = frame_from_filename
-    else:
-        frame_start = 1
-    
+    frame_start = get_next_frame_start(scene)
     first_frame = os.path.join(directory, elements[0])
+    
     sequence_strip = sequences.new_image(
         name='image_sequence',
         filepath=first_frame,
@@ -119,13 +124,8 @@ for sequence in settings['sequences']:
     if os.path.isfile(path):
         dirname, basename = os.path.split(path)
         movieclip = movieclips.load(path)
+        frame_start = get_next_frame_start(scene)
         
-        last = get_last_strip(scene)
-        if last:
-            frame_start = last.frame_start + last.frame_final_duration
-        else:
-            frame_start = 1
-            
         sequence_strip = sequences.new_clip(
             name=basename,
             clip=movieclip,

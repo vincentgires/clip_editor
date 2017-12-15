@@ -55,6 +55,24 @@ def get_next_frame_start(scene):
         
         return frame_start
 
+def set_frame_range(scene):
+    frame_start = 1
+    frame_end = 1
+
+    for sequence in scene.sequence_editor.sequences:
+        if sequence.frame_start < frame_start:
+            frame_start = sequence.frame_start
+        
+        strip_length = sequence.frame_final_duration
+        strip_frame_end = sequence.frame_start+strip_length
+        if strip_frame_end > frame_end:
+            frame_end = strip_frame_end
+    
+    frame_end -= 1
+    scene.frame_start = frame_start
+    scene.frame_end = frame_end
+    return (frame_start, frame_end)
+
 def update_frame(scene):
     for overlay in settings['overlays']:
         object = scene.objects[overlay['position']]
@@ -114,6 +132,7 @@ sequences = scene.sequence_editor.sequences
 
 # GET FILES AND SET SEQUENCER
 for sequence in settings['sequences']:
+    
     path = sequence['path']
     path = os.path.normpath(path)
     if sys.platform.startswith('linux'):
@@ -158,16 +177,24 @@ for sequence in settings['sequences']:
     # custom properties
     sequence_strip['sequence_name'] = sequence['name']
     
-    
+    if settings['display_bars']:
+        sequence_strip.use_translation = True
+        sequence_strip.transform.offset_y = settings['bar_size']/2
+
+
+# FRAME RANGE
+frame_start, frame_end = set_frame_range(scene)
+
+
 # SET OVERLAY
 if settings['overlays']:
     overlay_scene = sequences.new_scene(
         name='overlay_scene',
         scene=scene,
         channel=overlay_channel,
-        frame_start = sequence_strip.frame_start
+        frame_start = frame_start
         )
-    overlay_scene.frame_final_duration = sequence_strip.frame_duration
+    overlay_scene.frame_final_duration = frame_end
     overlay_scene.blend_type = 'ALPHA_OVER'
     
     for overlay in settings['overlays']:
@@ -182,8 +209,6 @@ if settings['overlays']:
         
         
 # RENDER SETTINGS
-scene.frame_start = sequence_strip.frame_start
-scene.frame_end = scene.frame_start + sequence_strip.frame_duration - 1
 scene.render.resolution_x = x_res
 scene.render.resolution_y = y_res
 scene.render.resolution_percentage = 100
@@ -193,11 +218,8 @@ view_transform = settings['view_transform']
 if view_transform:
     scene.view_settings.view_transform = view_transform
 
-
 if settings['display_bars']:
     scene.render.resolution_y += settings['bar_size']
-    sequence_strip.use_translation = True
-    sequence_strip.transform.offset_y = settings['bar_size']/2
 
 
 # BLEND FILE

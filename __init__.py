@@ -136,6 +136,7 @@ class Sequence(Item):
         images = []
         path = self.path
         dirname, basename = os.path.split(path)
+        dirname = os.path.normpath(dirname)
         
         if '#' not in basename:
             return None

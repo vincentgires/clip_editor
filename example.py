@@ -26,7 +26,6 @@ frame_overlay = clip.overlays.new()
 frame_overlay.type = 'FRAME'
 # available position in clip_editor.OverlayPositions.items
 frame_overlay.position = 'BOTTOM_LEFT'
-frame_overlay.body = 'my custon text'
 
 clip.overlays.new(type='TEXT',
                   position='TOP_RIGHT',

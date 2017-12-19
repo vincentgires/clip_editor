@@ -5,9 +5,11 @@ import sys
 import getpass
 import json
 import re
+
 current_dir = os.path.dirname(__file__)
-sys.path.append(current_dir)
-import utils
+parent_dir = os.path.join(current_dir, os.pardir)
+sys.path.append(parent_dir)
+from clip_editor import utils
 
 
 settings = sys.argv[-1]
@@ -15,7 +17,6 @@ settings = json.loads(settings)
 
 data = bpy.data
 movieclips = data.movieclips
-
 context = bpy.context
 scene = context.scene
 

@@ -3,8 +3,8 @@
 import os
 import json
 import subprocess
-from . import config
-from . import utils
+from clip_editor import config
+from clip_editor import utils
 
 
 def check_filters(collection, attribute, value):

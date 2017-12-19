@@ -4,6 +4,7 @@ import os
 import json
 import subprocess
 from . import config
+from . import utils
 
 
 def check_filters(collection, attribute, value):
@@ -136,7 +137,7 @@ class Sequence(Item):
         images = []
         path = self.path
         dirname, basename = os.path.split(path)
-        dirname = os.path.normpath(dirname)
+        dirname = utils.normpath(dirname)
         
         if '#' not in basename:
             return None
@@ -149,7 +150,7 @@ class Sequence(Item):
                 length += 1
             else:
                 break
-    
+        
         for file in os.listdir(dirname):
             if len(file) == len(basename):
                 
@@ -216,7 +217,7 @@ class Clip():
     def encode(self, output, fps=24,
                display_bars=False, bar_size=60, debug_file=False):
         
-        output = os.path.normpath(output)
+        output = utils.normpath(output)
         
         sequences_settings = []
         for seq in self.sequences:

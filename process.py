@@ -5,6 +5,10 @@ import sys
 import getpass
 import json
 import re
+current_dir = os.path.dirname(__file__)
+sys.path.append(current_dir)
+import utils
+
 
 settings = sys.argv[-1]
 settings = json.loads(settings)
@@ -134,9 +138,7 @@ sequences = scene.sequence_editor.sequences
 for sequence in settings['sequences']:
     
     path = sequence['path']
-    path = os.path.normpath(path)
-    if sys.platform.startswith('linux'):
-        path = path.replace('//', '/')
+    path = utils.normpath(path)
     files = sequence['files']
     images = sequence['images']
     

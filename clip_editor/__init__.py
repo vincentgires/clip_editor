@@ -214,8 +214,8 @@ class Clip():
     def overlays(self):
         return self._overlays
         
-    def encode(self, output, fps=24,
-               display_bars=False, bar_size=60, debug_file=False):
+    def encode(self, output, fps=24, resolution=None,
+               display_bars=False, bar_size=30, debug_file=False):
         
         output = utils.normpath(output)
         
@@ -231,6 +231,7 @@ class Clip():
             'sequences':sequences_settings,
             'output':output,
             'fps':fps,
+            'resolution':resolution,
             'overlays':overlays_settings,
             'display_bars':display_bars,
             'bar_size':bar_size,

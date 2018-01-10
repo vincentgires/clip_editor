@@ -21,7 +21,8 @@ context = bpy.context
 scene = context.scene
 
 sequence_channel = 1
-overlay_channel = 2
+transform_channel = 2
+overlay_channel = 3
 
 
 def get_frame_from_filename(file):
@@ -180,9 +181,27 @@ for sequence in settings['sequences']:
     # custom properties
     sequence_strip['sequence_name'] = sequence['name']
     
-    if settings['display_bars']:
+    if settings['resolution']:
+        x, y = settings['resolution']
+        
+        if settings['display_bars']:
+            
+            transform_strip = sequences.new_effect(
+                name='Transform',
+                type='TRANSFORM',
+                channel=transform_channel,
+                frame_start=sequence_strip.frame_start,
+                seq1=sequence_strip
+                )
+            
+            final_res_y = y+(settings['bar_size']*2)
+            scale_y = (1/y)*final_res_y
+            scale_y = 1/scale_y
+            transform_strip.scale_start_y = scale_y
+            
+    elif settings['display_bars']:
         sequence_strip.use_translation = True
-        sequence_strip.transform.offset_y = settings['bar_size']/2
+        sequence_strip.transform.offset_y = settings['bar_size']
 
 
 # FRAME RANGE
@@ -209,12 +228,17 @@ if settings['overlays']:
             object.data.body = time.strftime('%Y-%m-%d')
         elif overlay['type'] == 'USER':
             object.data.body = getpass.getuser()
-        
-        
+
 # RENDER SETTINGS
-scene.render.resolution_x = x_res
-scene.render.resolution_y = y_res
-scene.render.resolution_percentage = 100
+if settings['resolution']:
+    x, y = settings['resolution']
+    scene.render.resolution_x = x
+    scene.render.resolution_y = y
+    scene["text_size"] *= x_res/x
+else:
+    scene.render.resolution_x = x_res
+    scene.render.resolution_y = y_res
+ 
 scene.render.filepath = settings['output']
 
 view_transform = settings['view_transform']
@@ -222,7 +246,7 @@ if view_transform:
     scene.view_settings.view_transform = view_transform
 
 if settings['display_bars']:
-    scene.render.resolution_y += settings['bar_size']
+    scene.render.resolution_y += settings['bar_size']*2
 
 
 # BLEND FILE

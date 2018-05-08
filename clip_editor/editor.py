@@ -168,6 +168,7 @@ class Sequences(Collection):
             'colorspace': None}
         super(Sequences, self).__init__(**attributes)
 
+
 class Overlays(Collection):
     def __init__(self, type='TEXT', position='BOTTOM_LEFT', body=''):
         attributes = {
@@ -175,8 +176,8 @@ class Overlays(Collection):
             'position': position,
             'body': body}
         filters = {
-            'type':OverlayType,
-            'position':OverlayPosition}
+            'type': OverlayType,
+            'position': OverlayPosition}
         super(Overlays, self).__init__(filters=filters, **attributes)
 
 

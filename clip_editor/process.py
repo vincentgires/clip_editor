@@ -163,6 +163,8 @@ def process():
             if files:
                 movieclip = movieclips.load(os.path.join(dirname, files[0]))
                 sequence_strip = create_image_sequence(scene, dirname, files)
+            else:
+                raise ValueError('files attribute of the sequence is empty')
 
         elif '#' in path:
             dirname = os.path.dirname(path)
@@ -170,7 +172,7 @@ def process():
                 movieclip = movieclips.load(os.path.join(dirname, images[0]))
                 sequence_strip = create_image_sequence(scene, dirname, images)
 
-        # movieclip is created also for image sequences to get the resolution
+        # movieclip is created also to get the resolution of image sequences
         x_res, y_res = movieclip.size
 
         # colorspace

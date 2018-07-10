@@ -5,6 +5,8 @@ import sys
 import getpass
 import json
 import re
+import shutil
+import tempfile
 from enum import IntEnum
 
 current_dir = os.path.dirname(__file__)
@@ -236,7 +238,10 @@ def process():
         scene.render.resolution_x = x_res
         scene.render.resolution_y = y_res
 
-    scene.render.filepath = settings['output']
+    # SET IMAGE SEQUENCE
+    render_tmp = tempfile.mkdtemp()
+    scene.render.filepath = os.path.join(render_tmp, 'render.####.png')
+    scene.render.image_settings.file_format = 'PNG'
 
     view_transform = settings['view_transform']
     if view_transform:
@@ -254,6 +259,12 @@ def process():
 
     # ENCODE
     bpy.ops.render.render(animation=True)
+
+    # CONVERT IMAGE SEQ TO MOVIE
+    settings['output']
+
+    # REMOVE TEMP FOLDER
+    shutil.rmtree(render_tmp)
 
 bpy.app.handlers.frame_change_pre.append(update_frame)
 process()

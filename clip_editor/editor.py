@@ -1,8 +1,8 @@
 import os
 import json
 import subprocess
-from clip_editor import config
 from clip_editor import utils
+from clip_editor.config import BLENDER_BIN, TEMPLATE_PATH, SCRIPT_PATH
 
 
 def check_filters(collection, attribute, value):
@@ -201,7 +201,7 @@ class Clip():
 
         output = utils.normpath(output)
         sequences_settings = []
-        
+
         for seq in self.sequences:
             item = seq.attributes
             item['images'] = seq.find_images()
@@ -223,13 +223,13 @@ class Clip():
         settings = json.dumps(settings)
 
         command = [
-            config.blender_path,
-            config.template_path,
+            BLENDER_BIN,
+            TEMPLATE_PATH,
             '--background',
             '--factory-startup',
             '--enable-autoexec',
             '--python',
-            config.script_path,
+            SCRIPT_PATH,
             '--',
             settings]
 

@@ -7,12 +7,14 @@ import json
 import re
 import shutil
 import tempfile
+import subprocess
 from enum import IntEnum
 
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.join(current_dir, os.pardir)
 sys.path.append(parent_dir)
 from clip_editor import utils
+from clip_editor.config import FFMPEG_BIN
 
 settings = sys.argv[-1]
 settings = json.loads(settings)
@@ -261,7 +263,14 @@ def process():
     bpy.ops.render.render(animation=True)
 
     # CONVERT IMAGE SEQ TO MOVIE
-    settings['output']
+    command = [
+        FFMPEG_BIN,
+        '-framerate', str(settings['fps']),
+        '-i', '{}/render.%04d.png'.format(render_tmp),
+        '-c:v', 'mjpeg',
+        '-q:v', '1',
+        settings['output']]
+    subprocess.call(command)
 
     # REMOVE TEMP FOLDER
     shutil.rmtree(render_tmp)

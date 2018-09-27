@@ -8,6 +8,7 @@ import re
 import shutil
 import tempfile
 import subprocess
+import logging
 from enum import IntEnum
 
 current_dir = os.path.dirname(__file__)
@@ -140,12 +141,12 @@ def update_frame(scene):
 
 def process():
 
-    # SEQUENCER
+    # Set Sequencer
     if not scene.sequence_editor:
         scene.sequence_editor_create()
     sequences = scene.sequence_editor.sequences
 
-    # GET FILES AND SET SEQUENCER
+    # Get files and set sequencer
     for sequence in settings['sequences']:
         path = sequence['path']
         path = utils.normpath(path)
@@ -161,7 +162,6 @@ def process():
                 clip=movieclip,
                 channel=VSEChannel.SEQUENCE.value,
                 frame_start=frame_start)
-
         elif os.path.isdir(path):
             dirname = path
             if files:
@@ -169,26 +169,27 @@ def process():
                 sequence_strip = create_image_sequence(scene, dirname, files)
             else:
                 raise ValueError('files attribute of the sequence is empty')
-
         elif '#' in path:
             dirname = os.path.dirname(path)
             if images:
                 movieclip = movieclips.load(os.path.join(dirname, images[0]))
                 sequence_strip = create_image_sequence(scene, dirname, images)
+        else:
+            logging.error('Do not find any images')
+            return None
 
-        # movieclip is created also to get the resolution of image sequences
+        # Movieclip is created also to get the resolution of image sequences
         x_res, y_res = movieclip.size
 
-        # colorspace
+        # Colorspace
         sequence_colorspace = sequence['colorspace']
         if sequence_colorspace:
             movieclip.colorspace_settings.name = sequence_colorspace
             if sequence_strip.type in ['MOVIE', 'IMAGE']:
                 sequence_strip.colorspace_settings.name = sequence_colorspace
 
-        # custom properties
+        # Custom properties
         sequence_strip['sequence_name'] = sequence['name']
-
         if settings['resolution']:
             x, y = settings['resolution']
             if settings['display_bars']:
@@ -202,15 +203,13 @@ def process():
                 scale_y = (1/y)*final_res_y
                 scale_y = 1/scale_y
                 transform_strip.scale_start_y = scale_y
-
         elif settings['display_bars']:
             sequence_strip.use_translation = True
             sequence_strip.transform.offset_y = settings['bar_size']
 
-    # FRAME RANGE
     frame_start, frame_end = set_frame_range(scene)
 
-    # SET OVERLAY
+    # Set overlay
     if settings['overlays']:
         overlay_scene = sequences.new_scene(
             name='overlay_scene',
@@ -230,7 +229,7 @@ def process():
             elif overlay['type'] == 'USER':
                 object.data.body = getpass.getuser()
 
-    # RENDER SETTINGS
+    # Render settings
     if settings['resolution']:
         x, y = settings['resolution']
         scene.render.resolution_x = x
@@ -240,7 +239,7 @@ def process():
         scene.render.resolution_x = x_res
         scene.render.resolution_y = y_res
 
-    # SET IMAGE SEQUENCE
+    # Set image sequence
     render_tmp = tempfile.mkdtemp()
     scene.render.filepath = os.path.join(render_tmp, 'render.####.png')
     scene.render.image_settings.file_format = 'PNG'
@@ -252,17 +251,16 @@ def process():
     if settings['display_bars']:
         scene.render.resolution_y += settings['bar_size']*2
 
-    # BLEND FILE
+    # .blend file
     if settings['debug_file']:
         bpy.ops.wm.save_as_mainfile(
             filepath='{}.blend'.format(settings['output']),
             check_existing=True,
             relative_remap=False)
 
-    # ENCODE
     bpy.ops.render.render(animation=True)
 
-    # CONVERT IMAGE SEQ TO MOVIE
+    # Convert image seq to movie
     command = [
         FFMPEG_BIN,
         '-framerate', str(settings['fps']),
@@ -273,7 +271,7 @@ def process():
         '-y']
     subprocess.call(command)
 
-    # REMOVE TEMP FOLDER
+    # Remove temp folder
     shutil.rmtree(render_tmp)
 
 bpy.app.handlers.frame_change_pre.append(update_frame)

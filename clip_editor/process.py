@@ -269,7 +269,8 @@ def process():
         '-i', '{}/render.%04d.png'.format(render_tmp),
         '-c:v', 'mjpeg',
         '-q:v', '1',
-        settings['output']]
+        settings['output'],
+        '-y']
     subprocess.call(command)
 
     # REMOVE TEMP FOLDER

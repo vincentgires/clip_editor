@@ -114,29 +114,27 @@ def update_frame(scene):
         object = scene.objects[overlay['position']]
 
         strip = get_current_strip(scene, VSEChannel.SEQUENCE.value)
-
         if not strip:
             return None
 
         if overlay['type'] == 'NAME':
             object.data.body = strip['sequence_name']
-
         if strip.type in ['MOVIE', 'MOVIECLIP']:
             if overlay['type'] == 'FRAME':
                 object.data.body = '{:04}'.format(scene.frame_current)
-
             elif overlay['type'] == 'FILENAME':
                 object.data.body = strip.name
-
         elif strip.type == 'IMAGE':
             elem = strip.strip_elem_from_frame(scene.frame_current)
-
             if overlay['type'] == 'FRAME':
                 file_frame = get_frame_from_filename(elem.filename)
                 object.data.body = '{:04}'.format(file_frame)
-
             if overlay['type'] == 'FILENAME':
                 object.data.body = elem.filename
+
+
+def on_write_frame(scene):
+    pass
 
 
 def process():
@@ -275,4 +273,5 @@ def process():
     shutil.rmtree(render_tmp)
 
 bpy.app.handlers.frame_change_pre.append(update_frame)
+bpy.app.handlers.render_write.append(on_write_frame)
 process()

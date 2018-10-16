@@ -5,7 +5,8 @@ current_dir = os.path.dirname(__file__)
 current_dir = os.path.normpath(current_dir)
 
 TEMPLATE_PATH = os.path.join(current_dir, 'template.blend')
-SCRIPT_PATH = os.path.join(current_dir, 'process.py')
+PROCESS_SCRIPT_PATH = os.path.join(current_dir, 'process.py')
+EXTRACT_SCRIPT_PATH = os.path.join(current_dir, 'extract.py')
 
 if sys.platform.startswith('linux'):
     BLENDER_BIN = 'blender'

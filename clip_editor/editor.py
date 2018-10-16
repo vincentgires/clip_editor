@@ -2,7 +2,7 @@ import os
 import json
 import subprocess
 from clip_editor import utils
-from clip_editor.config import BLENDER_BIN, TEMPLATE_PATH, SCRIPT_PATH
+from clip_editor.config import BLENDER_BIN, TEMPLATE_PATH, PROCESS_SCRIPT_PATH
 
 
 def check_filters(collection, attribute, value):
@@ -229,7 +229,7 @@ class Clip():
             '--factory-startup',
             '--enable-autoexec',
             '--python',
-            SCRIPT_PATH,
+            PROCESS_SCRIPT_PATH,
             '--',
             settings]
 

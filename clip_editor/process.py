@@ -13,7 +13,7 @@ from enum import IntEnum
 
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.join(current_dir, os.pardir)
-sys.path.append(parent_dir)
+sys.path.insert(0, parent_dir)
 from clip_editor import utils
 from clip_editor.config import FFMPEG_BIN
 

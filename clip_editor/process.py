@@ -272,6 +272,7 @@ def process():
     # Remove temp folder
     shutil.rmtree(render_tmp)
 
+
 bpy.app.handlers.frame_change_pre.append(update_frame)
 bpy.app.handlers.render_write.append(on_write_frame)
 process()

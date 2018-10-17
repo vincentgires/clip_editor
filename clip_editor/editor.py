@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import subprocess
 from clip_editor import utils
@@ -237,4 +238,9 @@ class Clip():
         if self.ocio:
             env['OCIO'] = self.ocio
 
-        subprocess.call(command, env=env)
+        startupinfo = None
+        if sys.platform.startswith('win'):
+            # Do not pop window when process is called
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        subprocess.call(command, env=env, startupinfo=startupinfo)

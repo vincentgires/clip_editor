@@ -1,10 +1,6 @@
 import bpy
 import os
 import sys
-
-current_dir = os.path.dirname(__file__)
-parent_dir = os.path.join(current_dir, os.pardir)
-sys.path.insert(0, parent_dir)
 from clip_editor import utils
 from clip_editor import argconfig
 
@@ -14,6 +10,7 @@ context = bpy.context
 scene = context.scene
 
 args = argconfig.get_args()
+
 
 def process():
     # Remove all objects

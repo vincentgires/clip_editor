@@ -2,8 +2,9 @@ import os
 import sys
 import json
 import subprocess
-from clip_editor import utils
-from clip_editor.config import BLENDER_BIN, TEMPLATE_PATH, PROCESS_SCRIPT_PATH
+from . import utils
+from .config import (
+    BLENDER_BIN, TEMPLATE_PATH, PROCESS_SCRIPT_PATH
 
 
 def check_filters(collection, attribute, value):

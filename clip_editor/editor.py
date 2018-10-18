@@ -4,7 +4,7 @@ import json
 import subprocess
 from . import utils
 from .config import (
-    BLENDER_BIN, TEMPLATE_PATH, PROCESS_SCRIPT_PATH
+    BLENDER_BIN, TEMPLATE_PATH, PROCESS_SCRIPT_PATH)
 
 
 def check_filters(collection, attribute, value):

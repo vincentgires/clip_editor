@@ -236,7 +236,8 @@ def process():
     # Set image sequence
     render_tmp = tempfile.mkdtemp()
     scene.render.filepath = os.path.join(render_tmp, 'render.####.png')
-    scene.render.image_settings.file_format = 'PNG'
+    scene.render.image_settings.file_format = 'JPEG'
+    scene.render.image_settings.quality = 100
 
     view_transform = settings['view_transform']
     if view_transform:
@@ -258,7 +259,7 @@ def process():
     command = [
         FFMPEG_BIN,
         '-framerate', str(settings['fps']),
-        '-i', '{}/render.%04d.png'.format(render_tmp),
+        '-i', '{}/render.%04d.jpg'.format(render_tmp),
         '-c:v', 'mjpeg',
         '-q:v', '1',
         settings['output'],

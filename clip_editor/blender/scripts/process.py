@@ -10,8 +10,9 @@ import tempfile
 import subprocess
 import logging
 from enum import IntEnum
+
 from clip_editor import utils
-from clip_editor.config import FFMPEG_BIN
+from clip_editor.blender.modules import render
 
 settings = sys.argv[-1]
 settings = json.loads(settings)
@@ -240,6 +241,8 @@ def process():
                 object.data.body = getpass.getuser()
 
     # Render settings
+    scene.render.fps = settings['fps']
+
     if settings['resolution']:
         x, y = settings['resolution']
         scene.render.resolution_x = x
@@ -248,12 +251,6 @@ def process():
     else:
         scene.render.resolution_x = x_res
         scene.render.resolution_y = y_res
-
-    # Set image sequence
-    render_tmp = tempfile.mkdtemp()
-    scene.render.filepath = os.path.join(render_tmp, 'render.####.jpg')
-    scene.render.image_settings.file_format = 'JPEG'
-    scene.render.image_settings.quality = 100
 
     view_transform = settings['view_transform']
     if view_transform:
@@ -269,21 +266,9 @@ def process():
             check_existing=True,
             relative_remap=False)
 
-    bpy.ops.render.render(animation=True)
-
-    # Convert image seq to movie
-    command = [
-        FFMPEG_BIN,
-        '-framerate', str(settings['fps']),
-        '-i', '{}/render.%04d.jpg'.format(render_tmp),
-        '-c:v', 'mjpeg',
-        '-q:v', '1',
-        settings['output'],
-        '-y']
-    subprocess.call(command)
-
-    # Remove temp folder
-    shutil.rmtree(render_tmp)
+    render.render(
+        scene=scene,
+        output=settings['output'])
 
 
 bpy.app.handlers.frame_change_pre.append(update_frame)

@@ -7,6 +7,7 @@ import subprocess
 
 from clip_editor import utils, argconfig
 from clip_editor.config import FFMPEG_BIN
+from clip_editor.blender.modules import render
 
 data = bpy.data
 movieclips = data.movieclips
@@ -52,30 +53,12 @@ def process():
     start_frame = args.startframe or 1
     scene.frame_start = start_frame
     scene.frame_end = start_frame + movieclips[0].frame_duration - 1
-
-    # Set image sequence
-    render_tmp = tempfile.mkdtemp()
-    scene.render.filepath = os.path.join(render_tmp, 'render.####.jpg')
-    scene.render.resolution_percentage = 100
     scene.render.resolution_x = x
     scene.render.resolution_y = y
-    scene.render.image_settings.file_format = 'JPEG'
 
-    bpy.ops.render.render(animation=True)
-
-    # Convert image seq to movie
-    command = [
-        FFMPEG_BIN,
-        '-framerate', str(scene.render.fps),
-        '-i', '{}/render.%04d.jpg'.format(render_tmp),
-        '-c:v', 'mjpeg',
-        '-q:v', '1',
-        args.output,
-        '-y']
-    subprocess.call(command)
-
-    # Remove temp folder
-    shutil.rmtree(render_tmp)
+    render.render(
+        scene=scene,
+        output=args.output)
 
 
 process()

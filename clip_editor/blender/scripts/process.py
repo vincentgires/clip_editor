@@ -132,6 +132,22 @@ def update_frame(scene):
 def on_write_frame(scene):
     pass
 
+    '''
+    renderpath = os.path.join(scene.render.filepath, os.pardir)
+    renderpath = os.path.abspath(renderpath)
+    filepath = os.path.join(
+        renderpath, 'render.{:04}.jpg'.format(scene.frame_current))
+
+    x = str(100)
+    y = str(100)
+    command = [
+        'convert',
+        filepath,
+        '-draw', 'text '+x+','+y+ '"this is a note"',
+        '-draw', 'text 200,300 "FRAME : {:04}"'.format(scene.frame_current),
+        filepath]
+    subprocess.call(command)
+    '''
 
 def process():
 
@@ -235,7 +251,7 @@ def process():
 
     # Set image sequence
     render_tmp = tempfile.mkdtemp()
-    scene.render.filepath = os.path.join(render_tmp, 'render.####.png')
+    scene.render.filepath = os.path.join(render_tmp, 'render.####.jpg')
     scene.render.image_settings.file_format = 'JPEG'
     scene.render.image_settings.quality = 100
 
@@ -273,3 +289,9 @@ def process():
 bpy.app.handlers.frame_change_pre.append(update_frame)
 bpy.app.handlers.render_write.append(on_write_frame)
 process()
+
+# import time
+# start = time.time()
+# process()
+# end = time.time()
+# print('elapsed time:', end - start)

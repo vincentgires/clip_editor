@@ -22,7 +22,7 @@ def process():
         scene.sequence_editor_create()
     sequences = scene.sequence_editor.sequences
 
-    path = args.input
+    path = args.inputs[0]
     path = utils.normpath(path)
     start_frame = args.startframe or 1
 

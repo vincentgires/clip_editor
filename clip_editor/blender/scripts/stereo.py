@@ -8,13 +8,14 @@ import subprocess
 from clip_editor import utils, argconfig
 from clip_editor.config import FFMPEG_BIN
 from clip_editor.blender.modules import render
+from clip_editor.blender.modules.scene import set_scene_from_args
+
+args = argconfig.get_args()
 
 data = bpy.data
 movieclips = data.movieclips
 context = bpy.context
 scene = context.scene
-
-args = argconfig.get_args()
 
 
 def process():
@@ -39,6 +40,7 @@ def process():
     switchview_node = node_tree.nodes.new('CompositorNodeSwitchView')
     inputs = [utils.normpath(i) for i in args.inputs]
     for index, input in enumerate(inputs):
+        # TODO: use animate image reader for path/files
         movieclip = movieclips.load(input)
         node = node_tree.nodes.new('CompositorNodeMovieClip')
         node.clip = movieclip
@@ -56,9 +58,8 @@ def process():
     scene.render.resolution_x = x
     scene.render.resolution_y = y
 
-    render.render(
-        scene=scene,
-        output=args.output)
+    set_scene_from_args(scene)
+    render.render(scene)
 
 
 process()

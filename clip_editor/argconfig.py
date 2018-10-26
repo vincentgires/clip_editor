@@ -9,7 +9,11 @@ def get_args():
         '-inputs',
         nargs='+',
         help='File input',
-        required=True)
+        required=False)
+    parser.add_argument(
+        '-inputpath',
+        help='Path',
+        required=False)
     parser.add_argument(
         '-startframe',
         type=int,
@@ -32,9 +36,32 @@ def get_args():
         help='Crop bottom',
         required=False)
     parser.add_argument(
+        '-fps',
+        type=int,
+        help='FPS',
+        required=False)
+    parser.add_argument(
+        '-resolution',
+        nargs='+',
+        type=int,
+        help='-resolution X Y',
+        required=False)
+    parser.add_argument(
+        '-colorspace',
+        help='Footage colorspace',
+        required=False)
+    parser.add_argument(
+        '-viewtransform',
+        help='OCIO View Transform',
+        required=False)
+    parser.add_argument(
         '-output',
         help='File output',
-        required=True)
+        required=False)
+    parser.add_argument(
+        '-debug',
+        help='Debug',
+        required=False)
 
     # remove Blender specific arguments from sys.argv
     # to be able to use argparse

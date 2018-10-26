@@ -6,10 +6,11 @@ import subprocess
 from clip_editor.config import FFMPEG_BIN
 
 
-def render(scene, output):
+def render(scene):
     '''Wrapper around bpy.ops.render.render() to always render as image
     sequence and convert the result with FFmpeg that gives more control.'''
 
+    output = scene.render.filepath
     render_tmp = tempfile.mkdtemp()
     scene.render.filepath = os.path.join(render_tmp, 'render.####.jpg')
     scene.render.image_settings.file_format = 'JPEG'
@@ -29,3 +30,4 @@ def render(scene, output):
 
     # Remove temp folder
     shutil.rmtree(render_tmp)
+    scene.render.filepath = output

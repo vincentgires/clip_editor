@@ -16,3 +16,33 @@ def normpath(path):
 
     path = os.path.normpath(path)
     return path
+
+
+def find_images(path):
+    images = []
+    dirname, basename = os.path.split(path)
+    dirname = normpath(dirname)
+
+    if '#' not in basename:
+        return None
+
+    length = 0
+    index = basename.find('#')
+
+    for i in basename[index:]:
+        if i == '#':
+            length += 1
+        else:
+            break
+
+    for file in os.listdir(dirname):
+        if len(file) == len(basename):
+            check = True
+            for i in range(length):
+                if not file[index+i].isdigit():
+                    check = False
+            if check:
+                images.append(file)
+
+    images.sort()
+    return images

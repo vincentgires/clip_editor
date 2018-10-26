@@ -127,41 +127,7 @@ OverlayPosition = Enum(
     'BOTTOM_RIGHT')
 
 
-class Sequence(Item):
-    def find_images(self):
-        images = []
-        path = self.path
-        dirname, basename = os.path.split(path)
-        dirname = utils.normpath(dirname)
-
-        if '#' not in basename:
-            return None
-
-        length = 0
-        index = basename.find('#')
-
-        for i in basename[index:]:
-            if i == '#':
-                length += 1
-            else:
-                break
-
-        for file in os.listdir(dirname):
-            if len(file) == len(basename):
-                check = True
-                for i in range(length):
-                    if not file[index+i].isdigit():
-                        check = False
-                if check:
-                    images.append(file)
-
-        images.sort()
-        return images
-
-
 class Sequences(Collection):
-    _ItemType = Sequence
-
     def __init__(self, name='', path=''):
         attributes = {
             'name': name,
@@ -206,7 +172,7 @@ class Clip():
 
         for seq in self.sequences:
             item = seq.attributes
-            item['images'] = seq.find_images()
+            item['images'] = utils.find_images(seq['path'])
             sequences_settings.append(item)
 
         overlays_settings = [i.attributes for i in self.overlays]

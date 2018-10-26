@@ -3,13 +3,14 @@ import os
 import sys
 from clip_editor import utils
 from clip_editor import argconfig
+from clip_editor.blender.modules.scene import set_scene_from_args
+
+args = argconfig.get_args()
 
 data = bpy.data
 movieclips = data.movieclips
 context = bpy.context
 scene = context.scene
-
-args = argconfig.get_args()
 
 
 def process():
@@ -22,7 +23,7 @@ def process():
         scene.sequence_editor_create()
     sequences = scene.sequence_editor.sequences
 
-    path = args.inputs[0]
+    path = args.inputpath
     path = utils.normpath(path)
     start_frame = args.startframe or 1
 
@@ -61,4 +62,5 @@ def process():
         image.save_render('{}.{:04}{}'.format(file, frame, ext))
 
 
+set_scene_from_args(scene)
 process()

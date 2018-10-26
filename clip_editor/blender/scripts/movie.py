@@ -16,11 +16,10 @@ def process():
         scene.sequence_editor_create()
     sequences = scene.sequence_editor.sequences
 
-
     inputpath = args.inputpath
-    inputpath = utils.normpath(inputpath)
+    inputpath = utils.normpath(inputpath) if inputpath else None
 
-    if '#' in inputpath:
+    if inputpath and '#' in inputpath:
         dirname = os.path.dirname(inputpath)
         images = utils.find_images(inputpath)
         path = os.path.join(dirname, images[0])

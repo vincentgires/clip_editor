@@ -29,7 +29,10 @@ def process():
 
     sequence_strip, movieclip = sequencer.create_sequence(
         scene, images=images, path=path)
-    x_res, y_res = movieclip.size
+    x, y = movieclip.size
+    scene.render.resolution_percentage = 100
+    scene.render.resolution_x = x
+    scene.render.resolution_y = y
 
     if args.colorspace:
         movieclip.colorspace_settings.name = args.colorspace

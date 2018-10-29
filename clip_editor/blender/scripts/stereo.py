@@ -52,11 +52,16 @@ def process():
     node_tree.links.new(huesat_node.outputs[0], output_node.inputs[0])
 
     x, y = movieclips[0].size
-    start_frame = args.startframe or 1
+    # TODO: use args.startframe
+    # start_frame = args.startframe or 1
+    start_frame = 1
     scene.frame_start = start_frame
     scene.frame_end = start_frame + movieclips[0].frame_duration - 1
+    scene.render.resolution_percentage = 100
     scene.render.resolution_x = x
     scene.render.resolution_y = y
+
+    # TODO: place scene into VSE timeline to be able to add text overlay
 
     set_scene_from_args(scene)
     render.render(scene)

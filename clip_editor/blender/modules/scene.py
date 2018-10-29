@@ -12,5 +12,7 @@ def set_scene_from_args(scene):
         scene.render.resolution_y = y
     if args.viewtransform:
         scene.view_settings.view_transform = args.viewtransform
+    if args.colordepth:
+        scene.render.image_settings.color_depth = args.colordepth
     if args.output:
         scene.render.filepath = args.output

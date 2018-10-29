@@ -65,8 +65,7 @@ def process():
     scene.render.resolution_y = y
     scene.render.image_settings.file_format = IMAGE_FORMATS[ext]
 
-    if args.colordepth:
-        scene.render.image_settings.color_depth = args.colordepth
+    set_scene_from_args(scene)
 
     for frame in args.frames:
         scene.frame_current = frame
@@ -75,5 +74,4 @@ def process():
         image.save_render('{}.{:04}{}'.format(file, frame, ext))
 
 
-set_scene_from_args(scene)
 process()

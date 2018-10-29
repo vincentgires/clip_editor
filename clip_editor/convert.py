@@ -8,6 +8,9 @@ from .config import (
 
 
 def get_args_from_kwargs(**kwargs):
+    '''Convert kwargs into parsable arguments.
+    "-key value_a value_a"
+    '''
     result = []
     for k in kwargs:
         arg = kwargs[k]

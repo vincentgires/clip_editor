@@ -13,6 +13,15 @@ context = bpy.context
 scene = context.scene
 
 
+IMAGE_FORMATS = {
+    '.jpg': 'JPEG',
+    '.jpeg': 'JPEG',
+    '.exr': 'OPEN_EXR',
+    '.tif': 'TIFF',
+    '.tga': 'TARGA',
+}
+
+
 def process():
     # Remove all objects
     for obj in data.objects:
@@ -49,12 +58,16 @@ def process():
         sequence_strip.crop.min_y = args.cropbottom
         y -= args.croptop
 
+    file, ext = os.path.splitext(args.output)
+
     scene.render.resolution_percentage = 100
     scene.render.resolution_x = x
     scene.render.resolution_y = y
-    scene.render.image_settings.file_format = 'JPEG'
+    scene.render.image_settings.file_format = IMAGE_FORMATS[ext]
 
-    file, ext = os.path.splitext(args.output)
+    if args.colordepth:
+        scene.render.image_settings.color_depth = args.colordepth
+
     for frame in args.frames:
         scene.frame_current = frame
         bpy.ops.render.render()

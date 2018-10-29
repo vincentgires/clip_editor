@@ -47,6 +47,10 @@ def get_args():
         help='-resolution X Y',
         required=False)
     parser.add_argument(
+        '-colordepth',
+        help='Color depth',
+        required=False)
+    parser.add_argument(
         '-colorspace',
         help='Footage colorspace',
         required=False)

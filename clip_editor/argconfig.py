@@ -1,5 +1,6 @@
 import sys
 import argparse
+import json
 
 
 def get_args():
@@ -65,6 +66,11 @@ def get_args():
     parser.add_argument(
         '-debug',
         help='Debug',
+        required=False)
+    parser.add_argument(
+        '-textoverlay',
+        type=json.loads,
+        help='Overlay in a JSON Dump format',
         required=False)
 
     # remove Blender specific arguments from sys.argv

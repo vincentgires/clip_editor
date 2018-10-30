@@ -1,12 +1,6 @@
 import bpy
-import os
-import sys
-import tempfile
-import shutil
-import subprocess
 
 from clip_editor import utils, argconfig
-from clip_editor.config import FFMPEG_BIN
 from clip_editor.blender.modules import render
 from clip_editor.blender.modules.scene import set_scene_from_args
 

@@ -1,8 +1,6 @@
 import bpy
 import os
 import logging
-from clip_editor import utils
-from clip_editor import argconfig
 
 
 def create_sequence(scene, images=None, path=None, channel=1, frame_start=1):

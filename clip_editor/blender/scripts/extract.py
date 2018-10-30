@@ -1,6 +1,5 @@
 import bpy
 import os
-import sys
 from clip_editor import utils
 from clip_editor import argconfig
 from clip_editor.blender.modules.scene import set_scene_from_args

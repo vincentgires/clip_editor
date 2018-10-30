@@ -1,7 +1,6 @@
 import os
 import sys
 import subprocess
-from . import utils
 from .config import (
     BLENDER_BIN, TEMPLATE_PATH,
     EXTRACT_SCRIPT_PATH, MOVIE_SCRIPT_PATH, STEREO_SCRIPT_PATH)

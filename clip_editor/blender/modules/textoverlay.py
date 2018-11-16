@@ -65,6 +65,8 @@ def create_scene():
         if 'RIGHT' in position:
             font_object.location.x = 0.5
             font_curve.align_x = 'RIGHT'
+        if 'CENTER' in position:
+            font_curve.align_x = 'CENTER'
 
         scene.objects.link(font_object)
 

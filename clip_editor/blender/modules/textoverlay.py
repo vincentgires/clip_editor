@@ -21,8 +21,6 @@ def _create_variable_expression(
 
 
 def create_scene():
-    '''Create a new scene and append it to VSE.'''
-
     SCENE_NAME = 'TextOverlay'
     data = bpy.data
     scene = data.scenes.new(SCENE_NAME)
@@ -39,14 +37,12 @@ def create_scene():
     textoverlays = _get_textoverlays()
     for overlay in textoverlays:
         position = overlay['position']
-        color = overlay['color']
-        subtype = overlay['subtype']
+        subtype = overlay['subtype'] if 'subtype' in overlay else 'TEXT'
 
         font_curve = data.curves.new(type='FONT', name='font_curve')
         font_curve.size = 0.01
         font_object = bpy.data.objects.new('font_object', font_curve)
         font_object['position'] = position
-        font_object['color'] = color
         font_object['subtype'] = subtype
 
         x, y, z = 0, 1, 2
@@ -59,10 +55,10 @@ def create_scene():
 
         if 'TOP' in position:
             driver_y.expression = '0.5*(y/x)'
-            font_curve.align_y = 'CENTER'
+            font_curve.align_y = 'TOP'
         if 'BOTTOM' in position:
             driver_y.expression = '-0.5*(y/x)'
-            font_curve.align_y = 'TOP_BASELINE'
+            font_curve.align_y = 'BOTTOM'
         if 'LEFT' in position:
             font_object.location.x = -0.5
             font_curve.align_x = 'LEFT'
@@ -73,6 +69,7 @@ def create_scene():
         scene.objects.link(font_object)
 
     scene.update()
+    return scene
 
 
 if __name__ == '__main__':

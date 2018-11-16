@@ -1,10 +1,16 @@
 import sys
 import argparse
-import json
+
+
+def _arg_to_keyvalue(arg):
+    k, v = arg.split('=')
+    if k == 'color':
+        if ',' in v:
+            v = tuple(float(c) for c in v.split(','))
+    return (k, v)
 
 
 def get_args():
-
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-inputs',
@@ -69,9 +75,9 @@ def get_args():
         required=False)
     parser.add_argument(
         '-textoverlay',
-        type=json.loads,
-        help='Overlay in a JSON Dump format',
-        required=False)
+        action='append',
+        nargs='+',
+        type=_arg_to_keyvalue)
 
     # remove Blender specific arguments from sys.argv
     # to be able to use argparse

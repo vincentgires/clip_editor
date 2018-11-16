@@ -17,19 +17,22 @@ TEXTOVERLAY_POSITION = (
     'BOTTOM_RIGHT')
 
 
-def textoverlay(position, subtype, color=None):
-    color = color or (1.0, 1.0, 1.0)
-    if not (position in TEXTOVERLAY_TYPE and subtype in TEXTOVERLAY_POSITION):
-        return None
-    overlay = {
-        'position': position,
-        'subtype': subtype,
-        'color': color}
-    return json.dumps(overlay)
+# def textoverlay(position, subtype, color=None):
+#     color = color or (1.0, 1.0, 1.0)
+#     if not (position in TEXTOVERLAY_POSITION and subtype in TEXTOVERLAY_TYPE):
+#         return None
+#     overlay = {
+#         'position': position,
+#         'subtype': subtype,
+#         'color': color}
+#     return json.dumps(overlay)
 
 
 class TextOverlay():
-    pass
+    def __init__(self, position=None, subtype=None, color=None):
+        self.color = color or (1.0, 1.0, 1.0)
+        self.position = position or TEXTOVERLAY_POSITION[0]
+        self.subtype = subtype or TEXTOVERLAY_TYPE[0]
 
 
 class Clip():

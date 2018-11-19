@@ -2,8 +2,7 @@ import os
 import sys
 import subprocess
 from .config import (
-    BLENDER_BIN, TEMPLATE_PATH,
-    EXTRACT_SCRIPT_PATH, MOVIE_SCRIPT_PATH, STEREO_SCRIPT_PATH)
+    BLENDER_BIN, EXTRACT_SCRIPT_PATH, MOVIE_SCRIPT_PATH, STEREO_SCRIPT_PATH)
 
 
 def get_args_from_kwargs(**kwargs):
@@ -21,28 +20,15 @@ def get_args_from_kwargs(**kwargs):
     return result
 
 
-def sequence_to_movie(**kwargs):
+def call_blender(script_path, **kwargs):
     command = [
         BLENDER_BIN,
-        TEMPLATE_PATH,
         '--background',
         '--factory-startup',
         '--enable-autoexec',
-        '--python', MOVIE_SCRIPT_PATH,
+        '--python', script_path,
         '--']
     command.extend(get_args_from_kwargs(**kwargs))
-    subprocess.call(command)
-
-
-def extract(**kwargs):
-    command = [
-        BLENDER_BIN,
-        '--background',
-        '--factory-startup',
-        '--python', EXTRACT_SCRIPT_PATH,
-        '--']
-    command.extend(get_args_from_kwargs(**kwargs))
-
     startupinfo = None
     if sys.platform.startswith('win'):
         # Do not pop window when process is called
@@ -51,12 +37,13 @@ def extract(**kwargs):
     subprocess.call(command, startupinfo=startupinfo)
 
 
+def sequence_to_movie(**kwargs):
+    call_blender(script=MOVIE_SCRIPT_PATH)
+
+
+def extract(**kwargs):
+    call_blender(script=EXTRACT_SCRIPT_PATH)
+
+
 def to_stereo_movie(**kwargs):
-    command = [
-        BLENDER_BIN,
-        '--background',
-        '--factory-startup',
-        '--python', STEREO_SCRIPT_PATH,
-        '--']
-    command.extend(get_args_from_kwargs(**kwargs))
-    subprocess.call(command)
+    call_blender(script=STEREO_SCRIPT_PATH)

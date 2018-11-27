@@ -29,7 +29,7 @@ def create_scene():
     camera_data = data.cameras.new('camera')
     camera_data.type = 'ORTHO'
     camera_data.ortho_scale = 1
-    camera_object = bpy.data.objects.new('camera', camera_data)
+    camera_object = data.objects.new('camera', camera_data)
     camera_object.location = (0.0, 0.0, 10.0)
     scene.objects.link(camera_object)
 
@@ -41,7 +41,7 @@ def create_scene():
 
         font_curve = data.curves.new(type='FONT', name='font_curve')
         font_curve.size = 0.01
-        font_object = bpy.data.objects.new('font_object', font_curve)
+        font_object = data.objects.new('font_object', font_curve)
         font_object['position'] = position
         font_object['subtype'] = subtype
 

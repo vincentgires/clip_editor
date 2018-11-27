@@ -3,10 +3,14 @@ import argparse
 
 
 def _arg_to_keyvalue(arg):
+    '''-textoverlay position=800,600
+    -textoverlay position=TOP_LEFT
+    '''
     k, v = arg.split('=')
-    if k == 'color':
-        if ',' in v:
-            v = tuple(float(c) for c in v.split(','))
+    if ',' in v:
+        v = tuple(float(c) for c in v.split(','))
+    else:
+        v = v.upper()
     return (k, v)
 
 

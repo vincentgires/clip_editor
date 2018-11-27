@@ -45,28 +45,38 @@ def create_scene():
         font_object['position'] = position
         font_object['subtype'] = subtype
 
-        x, y, z = 0, 1, 2
-        driver_y = font_object.driver_add('location', y).driver
-        driver_y.type = 'SCRIPTED'
-        variable_yy = _create_variable_expression(
-            driver_y, 'y', 'SCENE', scene, 'render.resolution_y')
-        variable_yx = _create_variable_expression(
-            driver_y, 'x', 'SCENE', scene, 'render.resolution_x')
+        if isinstance(position, str):
+            x, y, z = 0, 1, 2
+            driver_y = font_object.driver_add('location', y).driver
+            driver_y.type = 'SCRIPTED'
+            variable_yy = _create_variable_expression(
+                driver_y, 'y', 'SCENE', scene, 'render.resolution_y')
+            variable_yx = _create_variable_expression(
+                driver_y, 'x', 'SCENE', scene, 'render.resolution_x')
 
-        if 'TOP' in position:
-            driver_y.expression = '0.5*(y/x)'
-            font_curve.align_y = 'TOP'
-        if 'BOTTOM' in position:
-            driver_y.expression = '-0.5*(y/x)'
-            font_curve.align_y = 'BOTTOM'
-        if 'LEFT' in position:
-            font_object.location.x = -0.5
-            font_curve.align_x = 'LEFT'
-        if 'RIGHT' in position:
-            font_object.location.x = 0.5
-            font_curve.align_x = 'RIGHT'
-        if 'CENTER' in position:
-            font_curve.align_x = 'CENTER'
+            if 'TOP' in position:
+                driver_y.expression = '0.5*(y/x)'
+                font_curve.align_y = 'TOP'
+            elif 'BOTTOM' in position:
+                driver_y.expression = '-0.5*(y/x)'
+                font_curve.align_y = 'BOTTOM'
+            if 'LEFT' in position:
+                font_object.location.x = -0.5
+                font_curve.align_x = 'LEFT'
+            elif 'RIGHT' in position:
+                font_object.location.x = 0.5
+                font_curve.align_x = 'RIGHT'
+            elif 'CENTER' in position:
+                font_curve.align_x = 'CENTER'
+
+        elif isinstance(position, tuple):
+            x, y = position
+            width = scene.render.resolution_x
+            height = scene.render.resolution_y
+            bottom = -0.5 * (height / width)
+            left = -0.5
+            font_object.location.x = left + (x / width)
+            font_object.location.y = bottom + (y / height) * (height / width)
 
         scene.objects.link(font_object)
 

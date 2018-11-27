@@ -45,38 +45,42 @@ def create_scene():
         font_object['position'] = position
         font_object['subtype'] = subtype
 
-        if isinstance(position, str):
-            x, y, z = 0, 1, 2
-            driver_y = font_object.driver_add('location', y).driver
-            driver_y.type = 'SCRIPTED'
-            variable_yy = _create_variable_expression(
-                driver_y, 'y', 'SCENE', scene, 'render.resolution_y')
-            variable_yx = _create_variable_expression(
-                driver_y, 'x', 'SCENE', scene, 'render.resolution_x')
+        # Add variable expression with render width and height
+        # variable name: res_y and res_x
+        x, y = 0, 1
+        drivers = {
+            'loc_x': font_object.driver_add('location', x).driver,
+            'loc_y': font_object.driver_add('location', y).driver}
+        for k, driver in drivers.items():
+            driver.type = 'SCRIPTED'
+            _create_variable_expression(
+                driver, 'res_y', 'SCENE', scene, 'render.resolution_y')
+            _create_variable_expression(
+                driver, 'res_x', 'SCENE', scene, 'render.resolution_x')
 
+        if isinstance(position, str):
             if 'TOP' in position:
-                driver_y.expression = '0.5*(y/x)'
+                drivers['loc_y'].expression = '0.5*(res_y/res_x)'
                 font_curve.align_y = 'TOP'
             elif 'BOTTOM' in position:
-                driver_y.expression = '-0.5*(y/x)'
+                drivers['loc_y'].expression = '-0.5*(res_y/res_x)'
                 font_curve.align_y = 'BOTTOM'
             if 'LEFT' in position:
-                font_object.location.x = -0.5
+                drivers['loc_x'].expression = '-0.5'
                 font_curve.align_x = 'LEFT'
             elif 'RIGHT' in position:
-                font_object.location.x = 0.5
+                drivers['loc_x'].expression = '0.5'
                 font_curve.align_x = 'RIGHT'
             elif 'CENTER' in position:
                 font_curve.align_x = 'CENTER'
 
         elif isinstance(position, tuple):
+            # bottom left is 0,0
             x, y = position
-            width = scene.render.resolution_x
-            height = scene.render.resolution_y
-            bottom = -0.5 * (height / width)
-            left = -0.5
-            font_object.location.x = left + (x / width)
-            font_object.location.y = bottom + (y / height) * (height / width)
+            x_expr = '-0.5+({x}/res_x)'.format(x=x)
+            y_expr = '-0.5*(res_y/res_x)+({y}/res_y)*(res_y/res_x)'.format(y=y)
+            drivers['loc_x'].expression = x_expr
+            drivers['loc_y'].expression = y_expr
 
         scene.objects.link(font_object)
 

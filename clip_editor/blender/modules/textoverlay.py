@@ -24,6 +24,7 @@ def create_scene():
     SCENE_NAME = 'TextOverlay'
     data = bpy.data
     scene = data.scenes.new(SCENE_NAME)
+    scene.render.alpha_mode = 'TRANSPARENT'
 
     # Camera
     camera_data = data.cameras.new('camera')

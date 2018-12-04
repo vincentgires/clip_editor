@@ -13,9 +13,9 @@ STEREO_SCRIPT_PATH = os.path.join(BLENDER_SCRIPTS_PATH, 'stereo.py')
 MOVIE_SCRIPT_PATH = os.path.join(
     BLENDER_SCRIPTS_PATH, 'movie.py')
 
-if sys.platform.startswith('linux'):
-    BLENDER_BIN = 'blender'
-    FFMPEG_BIN = 'ffmpeg'
-else:
+if sys.platform.startswith('win'):
     BLENDER_BIN = 'blender.exe'
     FFMPEG_BIN = 'ffmpeg.exe'
+else:
+    BLENDER_BIN = 'blender'
+    FFMPEG_BIN = 'ffmpeg'

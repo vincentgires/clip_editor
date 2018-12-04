@@ -21,20 +21,20 @@ def create_sequence(scene, images=None, path=None, channel=1, frame_start=1):
             frame_start=frame_start)
     elif path and os.path.isdir(path):
         dirname = path
-        if images:
-            # movieclip is created to get the resolution of image sequences
-            movieclip = movieclips.load(os.path.join(dirname, images[0]))
-            first_frame = os.path.join(path, images[0])
-            sequence_strip = sequences.new_image(
-                name='image_sequence',
-                filepath=first_frame,
-                channel=channel,
-                frame_start=frame_start)
-            for image in images[1:]:
-                name = os.path.basename(image)
-                sequence_strip.elements.append(name)
-        else:
-            raise ValueError('files attribute of the sequence is empty')
+        if not images:
+            raise ValueError('Images attribute is empty')
+        # movieclip is created to get the resolution of image sequences
+        movieclip = movieclips.load(os.path.join(dirname, images[0]))
+        first_frame = os.path.join(path, images[0])
+        sequence_strip = sequences.new_image(
+            name='image_sequence',
+            filepath=first_frame,
+            channel=channel,
+            frame_start=frame_start)
+        for image in images[1:]:
+            name = os.path.basename(image)
+            sequence_strip.elements.append(name)
+
     else:
         logging.error('Do not find any images')
         return None

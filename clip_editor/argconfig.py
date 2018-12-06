@@ -55,7 +55,7 @@ def get_args():
         '-resolution',
         nargs='+',
         type=int,
-        help='-resolution X Y',
+        help='Resolution X Y',
         required=False)
     parser.add_argument(
         '-colordepth',

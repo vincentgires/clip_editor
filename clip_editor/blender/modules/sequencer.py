@@ -4,9 +4,11 @@ import logging
 
 
 def create_sequence(scene, images=None, path=None, channel=1, frame_start=1):
-    '''Create a sequence depending of the input.
-    It can be an image sequence or a movieclip, image sequence can be a list of
-    images or a path with ####.'''
+    """Create a sequence strip depending of the input.
+
+    Image sequence or a movieclip.
+    Image sequence can be a list of images or a path with ####.
+    """
 
     sequences = scene.sequence_editor.sequences
     movieclips = bpy.data.movieclips

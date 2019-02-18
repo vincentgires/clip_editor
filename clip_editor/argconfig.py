@@ -3,9 +3,12 @@ import argparse
 
 
 def _arg_to_keyvalue(arg):
-    '''-textoverlay position=800,600
+    """Convert argument to key/value pair.
+
+    -textoverlay position=800,600
     -textoverlay position=TOP_LEFT
-    '''
+    """
+
     k, v = arg.split('=')
     if ',' in v:
         v = tuple(float(c) for c in v.split(','))
@@ -96,9 +99,11 @@ def get_args():
 
 
 def args_from_kwargs(**kwargs):
-    '''Convert kwargs into parsable arguments.
-    "-key value_a value_a"
-    '''
+    """Convert kwargs into parsable arguments.
+
+    -key value_a value_b
+    """
+
     result = []
     for k in kwargs:
         arg = kwargs[k]

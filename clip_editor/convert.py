@@ -1,23 +1,9 @@
 import os
 import sys
 import subprocess
+from .argconfig import args_from_kwargs
 from .config import (
     BLENDER_BIN, EXTRACT_SCRIPT_PATH, MOVIE_SCRIPT_PATH, STEREO_SCRIPT_PATH)
-
-
-def _get_args_from_kwargs(**kwargs):
-    '''Convert kwargs into parsable arguments.
-    "-key value_a value_a"
-    '''
-    result = []
-    for k in kwargs:
-        arg = kwargs[k]
-        if isinstance(arg, list):
-            result.append('-{}'.format(k))
-            result.extend([str(f) for f in arg])
-        else:
-            result.extend(['-{}'.format(k), str(arg)])
-    return result
 
 
 def _call_blender(script_path, **kwargs):
@@ -28,7 +14,7 @@ def _call_blender(script_path, **kwargs):
         '--enable-autoexec',
         '--python', script_path,
         '--']
-    command.extend(_get_args_from_kwargs(**kwargs))
+    command.extend(args_from_kwargs(**kwargs))
     startupinfo = None
     if sys.platform.startswith('win'):
         # Do not pop window when process is called
@@ -38,12 +24,12 @@ def _call_blender(script_path, **kwargs):
 
 
 def sequence_to_movie(**kwargs):
-    _call_blender(script=MOVIE_SCRIPT_PATH)
+    _call_blender(script=MOVIE_SCRIPT_PATH, **kwargs)
 
 
 def extract(**kwargs):
-    _call_blender(script=EXTRACT_SCRIPT_PATH)
+    _call_blender(script=EXTRACT_SCRIPT_PATH, **kwargs)
 
 
 def to_stereo_movie(**kwargs):
-    _call_blender(script=STEREO_SCRIPT_PATH)
+    _call_blender(script=STEREO_SCRIPT_PATH, **kwargs)

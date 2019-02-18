@@ -93,3 +93,18 @@ def get_args():
         args = parser.parse_args()
 
     return args
+
+
+def args_from_kwargs(**kwargs):
+    '''Convert kwargs into parsable arguments.
+    "-key value_a value_a"
+    '''
+    result = []
+    for k in kwargs:
+        arg = kwargs[k]
+        if isinstance(arg, list):
+            result.append('-{}'.format(k))
+            result.extend([str(f) for f in arg])
+        else:
+            result.extend(['-{}'.format(k), str(arg)])
+    return result

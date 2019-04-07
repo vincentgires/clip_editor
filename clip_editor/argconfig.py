@@ -3,7 +3,7 @@ import argparse
 
 
 def _arg_to_keyvalue(arg):
-    """Convert argument to key/value pair.
+    """Convert argument to key/value pair
 
     -textoverlay position=800,600
     -textoverlay position=TOP_LEFT

@@ -7,7 +7,7 @@ from clip_editor.config import FFMPEG_BIN
 
 
 def render(scene):
-    """Wrapper around bpy.ops.render.render().
+    """Wrapper around bpy.ops.render.render()
 
     Always render as image sequence and convert the result with FFmpeg
     that gives more control.
